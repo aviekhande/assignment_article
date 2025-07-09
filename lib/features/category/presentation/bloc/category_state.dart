@@ -18,7 +18,7 @@ final class CategorySuccessState extends CategoryState {
   const CategorySuccessState({required this.categoryModel,this.isLoadingMore=false});
 
   @override
-  List<Object> get props => [categoryModel];
+  List<Object> get props => [categoryModel,isLoadingMore];
 }
 
 final class CategoryErrorState extends CategoryState {

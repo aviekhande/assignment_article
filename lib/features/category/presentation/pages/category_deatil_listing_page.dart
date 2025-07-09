@@ -2,8 +2,8 @@ import 'package:assignmen_article/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/common/widgets/loader_widget.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/textstyles.dart';
 import '../bloc/category_bloc.dart';
@@ -35,100 +35,106 @@ class CategoryScreen extends StatelessWidget {
                 ? RefreshIndicator(
                     onRefresh: () async {
                       context.read<CategoryBloc>().add(
+                        CategoryListingResetEvent(),
+                      );
+                      context.read<CategoryBloc>().add(
                         CategoryPressedEvent(categoryName: category),
                       );
                     },
-                    child: ListView.builder(
-                      itemCount: state.categoryModel.results!.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            context.router.push(ArticleRoute(index: index));
-                          },
-                          child: Card(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                (state
-                                                .categoryModel
-                                                .results![index]
-                                                .multimedia !=
-                                            null &&
-                                        state
-                                            .categoryModel
-                                            .results![index]
-                                            .multimedia!
-                                            .isNotEmpty &&
-                                        state
-                                                .categoryModel
-                                                .results![index]
-                                                .multimedia!
-                                                .first
-                                                .url !=
-                                            null)
-                                    ? Image.network(
-                                        state
-                                            .categoryModel
-                                            .results![index]
-                                            .multimedia!
-                                            .first
-                                            .url!,
-                                        width: double.infinity,
-                                        height: 200,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                              return const SizedBox(
-                                                height: 200,
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.broken_image,
-                                                    size: 48,
+                    child: NotificationListener<ScrollNotification>(
+                      onNotification: (scrollInfo) {
+                        if (!state.isLoadingMore &&
+                            scrollInfo.metrics.pixels ==
+                                scrollInfo.metrics.maxScrollExtent) {
+                          context.read<CategoryBloc>().add(
+                            CategoryLoadMoreEvent(),
+                          );
+                        }
+                        return false;
+                      },
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount:
+                            state.categoryModel.results!.length +
+                            (state.isLoadingMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == state.categoryModel.results!.length &&
+                              state.isLoadingMore) {
+                            return SizedBox(
+                              height: 50.h,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+
+                          final article = state.categoryModel.results![index];
+                          return GestureDetector(
+                            onTap: () =>
+                                context.router.push(ArticleRoute(index: index)),
+                            child: Card(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  (article.multimedia != null &&
+                                          article.multimedia!.isNotEmpty &&
+                                          article.multimedia!.first.url != null)
+                                      ? Image.network(
+                                          article.multimedia!.first.url!,
+                                          width: double.infinity,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                                return const SizedBox(
+                                                  height: 200,
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.broken_image,
+                                                      size: 48,
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            },
-                                      )
-                                    : const SizedBox(
-                                        height: 200,
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.image_not_supported,
-                                            size: 48,
+                                                );
+                                              },
+                                        )
+                                      : const SizedBox(
+                                          height: 200,
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.image_not_supported,
+                                              size: 48,
+                                            ),
                                           ),
                                         ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      article.title ?? '',
+                                      style: kTextStyleDMSans700.copyWith(
+                                        fontSize: 18,
                                       ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    state.categoryModel.results![index].title!,
-                                    style: kTextStyleDMSans700.copyWith(
-                                      fontSize: 18,
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0,
-                                    vertical: 4.0,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0,
+                                      vertical: 4.0,
+                                    ),
+                                    child: Text(
+                                      article.abstract ?? '',
+                                      style: kTextStyleDMSans400,
+                                    ),
                                   ),
-                                  child: Text(
-                                    state
-                                        .categoryModel
-                                        .results![index]
-                                        .abstract!,
-                                    style: kTextStyleDMSans400,
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   )
                 : Center(

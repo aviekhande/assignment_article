@@ -67,6 +67,9 @@ class HomeScreen extends StatelessWidget {
                 return InkWell(
                   onTap: () {
                     context.read<CategoryBloc>().add(
+                      CategoryListingResetEvent(),
+                    );
+                    context.read<CategoryBloc>().add(
                       CategoryPressedEvent(categoryName: category['title']),
                     );
                   },
@@ -114,7 +117,8 @@ class HomeScreen extends StatelessWidget {
                   state.errorMessage,
                   isSuccess: false,
                 );
-              } else if (state is CategorySuccessState) {
+              } else if (state is CategorySuccessState &&
+                  ModalRoute.of(context)!.isCurrent) {
                 context.router.push(
                   CategoryRoute(category: state.categoryModel.section!),
                 );

@@ -11,7 +11,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final CategoryRepository _categoryRepository;
 
   int page = 0;
-  final int limit = 10;
+  final int limit = 3;
   bool hasReachedMax = false;
 
   List<Results> _allResults = []; // all fetched data
