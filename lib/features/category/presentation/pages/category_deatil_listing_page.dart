@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:assignmen_article/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
@@ -60,6 +62,7 @@ class CategoryScreen extends StatelessWidget {
                         itemBuilder: (context, index) {
                           if (index == state.categoryModel.results!.length &&
                               state.isLoadingMore) {
+                            log("LOADER DISPLAYYYAYAYAY");
                             return SizedBox(
                               height: 50.h,
                               child: const Center(

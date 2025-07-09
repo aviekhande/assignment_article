@@ -68,7 +68,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         categoryModel: currentState.categoryModel,
         isLoadingMore: true,
       ));
-
+ await Future.delayed(Duration(milliseconds: 1000));
       // Load next chunk
       page++;
       final startIndex = page * limit;
