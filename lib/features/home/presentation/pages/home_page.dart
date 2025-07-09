@@ -11,7 +11,6 @@ import '../../../../core/theme/textstyles.dart';
 import '../../../category/presentation/bloc/category_bloc.dart';
 
 @RoutePage()
-// ---------------- Home Screen ----------------
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 // import '../../constants/app_icons.dart';
-import '../../constants/app_icons.dart';
 import '../../theme/app_colors.dart';
 // import 'package:lottie/lottie.dart';
 
