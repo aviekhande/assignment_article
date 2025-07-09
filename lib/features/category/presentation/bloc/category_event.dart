@@ -13,3 +13,17 @@ final class CategoryPressedEvent extends CategoryEvent {
   @override
   List<Object> get props => [categoryName];
 }
+final class CategoryLoadMoreEvent extends CategoryEvent {
+
+  const CategoryLoadMoreEvent();
+  @override
+  List<Object> get props => [];
+}
+
+class CategoryListingResetEvent extends CategoryEvent {
+
+  const CategoryListingResetEvent();
+
+  @override
+  List<Object> get props => [];
+}
